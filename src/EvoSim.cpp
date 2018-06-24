@@ -1,7 +1,17 @@
 //
 #include "include/EvoSim.h"
 
-// #include <Eigen/Dense>
+
+// define static flag to stop the sim
+bool EvoSim::flag_isrunning = true;
+
+void sighandler(int sig)
+{
+    std::cout << "Signal " << sig << " caught..." << std::endl;
+    std::cout << "Stopping simulation..." << std::endl;
+    EvoSim::flag_isrunning = false;
+}
+
 
 //////////////////////////////////////////////////
 
@@ -18,6 +28,11 @@ EvoSim::~EvoSim()
 
 void EvoSim::initialise()
 {
+
+    signal(SIGABRT, &sighandler);
+    signal(SIGTERM, &sighandler);
+    signal(SIGINT, &sighandler);
+ 
     // create service and timer for iteration calculations	
     m_pio_service = std::make_shared<boost::asio::io_service>();
     m_piteration_timer = std::make_shared<boost::asio::deadline_timer>
@@ -25,14 +40,11 @@ void EvoSim::initialise()
  
     // create ros publisher
     m_ros_publisher = m_ros_nodehandle.advertise<std_msgs::String>("evosim_status", 1);
-
-    // set flag to keep this running
-    flag_isrunning = true;
 }
 
 void EvoSim::stop()
 {
-    flag_isrunning = false;
+    EvoSim::flag_isrunning = false;
 }
 
 /////////////////////////////////////////////////////
@@ -52,7 +64,7 @@ void EvoSim::iteration()
     //m_ros_publisher.publish( simulation status  ); TODO
 
     // restart timer
-    if(flag_isrunning)
+    if(EvoSim::flag_isrunning)
     {
 	m_piteration_timer->expires_at(m_piteration_timer->expires_at() + boost::posix_time::milliseconds(100));
 	m_piteration_timer->async_wait(boost::bind(&EvoSim::iteration, this));

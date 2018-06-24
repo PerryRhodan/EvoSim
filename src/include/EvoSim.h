@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <signal.h>
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -10,6 +11,7 @@
 #include <std_msgs/String.h>
 
 #include "IWorld.h"
+
 
 class EvoSim
 {
@@ -20,14 +22,16 @@ class EvoSim
 	bool run();
 	void stop();
 
-    private:
+	static bool flag_isrunning;
+
+
+
+    private:	
 
 	void initialise();
 
 	/** main iteration function */
 	void iteration();
-	/** flag to keep iteration running */
-	bool flag_isrunning;
 
 	/////////////
 
