@@ -5,10 +5,12 @@
 
 
 
+
+
+
 void sighandler(int sig)
 {
     std::cout << "Signal " << sig << " caught..." << std::endl;
-
 }
 
 //void chatterCallback(const std_msgs::String::ConstPtr& msg)
@@ -18,13 +20,14 @@ void sighandler(int sig)
 
 int main (int argc, char *argv[])
 {
-    signal(SIGABRT, &sighandler);
-    signal(SIGTERM, &sighandler);
-    signal(SIGINT, &sighandler);
+//    signal(SIGABRT, &sighandler);
+//    signal(SIGTERM, &sighandler);
+//    signal(SIGINT, &sighandler);
 
     fprintf(stdout, "%s Version v%d.%d.%d\n\n", argv[0], VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
 
-
+    EvoSim sim;
+    sim.run();
 
     return 0;
 }
