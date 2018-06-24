@@ -45,7 +45,8 @@ include_directories(
 set(SRC_FILES 
 	"src/EvoSim.cpp"
 	"src/IAgent.cpp"
-	"src/IWorld.cpp"
+	"src/worlds/IWorld.cpp"
+	"src/worlds/SimpleWorld.cpp"
 	)
 set(UNIT_TESTS 
 	"unit-tests/main.cpp" 

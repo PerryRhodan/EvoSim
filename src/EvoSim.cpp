@@ -18,7 +18,9 @@ void sighandler(int sig)
 EvoSim::EvoSim()
 {    
     // create default world
-    m_pworld = std::make_shared<IWorld>(); 
+    //m_pworld = std::make_shared<IWorld>(); TODO
+    m_pworld = std::make_shared<SimpleWorld>();
+    std::cout << "EvoSim using world: " << m_pworld->m_str_name << std::endl;
 }
 
 EvoSim::~EvoSim()

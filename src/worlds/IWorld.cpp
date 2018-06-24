@@ -1,4 +1,4 @@
-#include "include/IWorld.h"
+#include "../include/worlds/IWorld.h"
 
 
 IWorld::IWorld()
@@ -43,6 +43,7 @@ void IWorld::update_agents(double delta)
 void IWorld::update_world(double delta)
 {
     // default world does nothing
+    std::cout << "default world update" << std::endl;
 }
 
 /////////////////////////////////////////////

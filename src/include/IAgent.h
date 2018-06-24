@@ -16,7 +16,9 @@ class IAgent
     
 	////////////////////////////
 
-	void update(double delta);
+	/** Updates this agent, taking 
+	 *  delta in seconds. */
+	virtual void update(double delta);
 
     private:
 

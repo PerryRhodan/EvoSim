@@ -10,8 +10,8 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 
-#include "IWorld.h"
-
+#include "worlds/IWorld.h"
+#include "worlds/SimpleWorld.h"
 
 class EvoSim
 {

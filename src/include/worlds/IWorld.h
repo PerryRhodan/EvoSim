@@ -3,8 +3,9 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <iostream>
 
-#include "IAgent.h"
+#include "../IAgent.h"
 
 class IWorld
 {
@@ -20,20 +21,24 @@ class IWorld
 	void add_new_agent(std::shared_ptr<IAgent> agent);
 
 
-    protected:
-	/** overload this */
-	void update_world(double detla);
+	/** world name */
+	std::string m_str_name;
+	
 
     private:
 
 	/** calls update function on all
-	 *  active agents */
+	 *  active agents, taking delta
+	 *  in seconds. */
 	void update_agents(double delta);
+
+
+    protected:
+	/** update world itself */
+	virtual void update_world(double detla);
 
 	//////////////////////////////////////
 
-	/** world name */
-	std::string m_str_name;
 	/** vector of living agents */
 	std::vector<std::shared_ptr<IAgent>> m_vpagents;
 };
