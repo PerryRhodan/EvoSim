@@ -5,7 +5,7 @@
 #include <memory>
 #include <iostream>
 
-#include "../IAgent.h"
+#include "../agents/IAgent.h"
 
 class IWorld
 {

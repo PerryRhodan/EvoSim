@@ -30,7 +30,6 @@ EvoSim::~EvoSim()
 
 void EvoSim::initialise()
 {
-
     signal(SIGABRT, &sighandler);
     signal(SIGTERM, &sighandler);
     signal(SIGINT, &sighandler);
@@ -64,6 +63,7 @@ void EvoSim::iteration()
  
     // publish current simulation status
     //m_ros_publisher.publish( simulation status  ); TODO
+
 
     // restart timer
     if(EvoSim::flag_isrunning)
