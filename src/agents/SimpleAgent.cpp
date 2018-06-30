@@ -51,7 +51,8 @@ void SimpleAgent::update(double delta)
     velocity *= 0.0; // reset velocity
 
     // consume energy
-    // TODO
+    // base cost based on size
+    energy -= size * 0.1; // TODO based on genes
 
     // starve off some size if out of energy, or grow in size
     size += energy * 0.1; // TODO based on genes

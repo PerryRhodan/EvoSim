@@ -7,7 +7,38 @@
 
 class SimpleAgent : public IAgent
 {
-    public:
+     // the food values of the areas around the agent
+     struct food_in_vision {
+	double front;
+	double right;
+	double left;
+	double back;
+     
+     	food_in_vision() {
+	    front = 0.0;
+	    right = 0.0;
+	    left = 0.0;
+	    back = 0.0;
+	};
+     };
+
+
+     // the sizes of other agents in the areas around this agent
+     struct agent_in_vision {
+	double front;
+	double right;
+	double left;
+	double back;
+
+	agent_in_vision() {
+	    front = 0.0;
+	    right = 0.0;
+	    left = 0.0;
+	    back = 0.0;
+	};
+     };
+
+     public:
 	SimpleAgent();
 	~SimpleAgent();
 
