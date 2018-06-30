@@ -1,5 +1,5 @@
 //
-#include "include/EvoSim.h"
+#include "../include/EvoSim.h"
 
 
 // define static flag to stop the sim

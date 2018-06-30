@@ -2,7 +2,7 @@
 #include <signal.h>
 #include <string>
 
-#include "include/EvoSim.h"
+#include "../include/EvoSim.h"
 
 
 int main (int argc, char *argv[])

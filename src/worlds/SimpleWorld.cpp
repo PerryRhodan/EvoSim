@@ -1,5 +1,5 @@
-#include "../include/worlds/SimpleWorld.h"
-#include "../include/agents/SimpleAgent.h"
+#include "../../include/worlds/SimpleWorld.h"
+#include "../../include/agents/SimpleAgent.h"
 
 SimpleWorld::SimpleWorld()
 {
@@ -22,4 +22,27 @@ void SimpleWorld::update_world(double delta)
 {
     std::cout << "update simple world" << std::endl;
 
+
+    // update agents
+    update_agents(delta);
 }
+
+/////////////////////////////////////////
+
+void SimpleWorld::update_agent_reception(SimpleAgent & agent)
+{
+    std::cout << "update simple agent reception" << std::endl;
+
+
+}
+
+void SimpleWorld::update_agents(double delta)
+{
+    for( auto& a : m_vpagents)
+    {
+	a->update(delta);
+	update_agent_reception( (*a) );
+    }
+}
+
+
