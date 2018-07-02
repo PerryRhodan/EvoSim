@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <random>
 
 class AgentData
 {
@@ -10,12 +11,14 @@ class AgentData
 	double right;
 	double left;
 	double back;
-     
+     	double center;
+
      	visibility_food() {
 	    front = 0.0;
 	    right = 0.0;
 	    left = 0.0;
 	    back = 0.0;
+	    center = 0.0;
 	};
      };
 
@@ -26,12 +29,14 @@ class AgentData
 	double right;
 	double left;
 	double back;
+	double center;
 
 	visibility_agents() {
 	    front = 0.0;
 	    right = 0.0;
 	    left = 0.0;
 	    back = 0.0;
+	    center = 0.0;
 	};
      };
 
@@ -93,25 +98,45 @@ class AgentData
        					// after which size is converted into energy
 	double energy_from_size_factor;
 
-	std::vector<double> neuron_weights_layer_0;
-	std::vector<double> neuron_weights_layer_1;
-	std::vector<double> neuron_weights_layer_2;
-     
+	// 7 neurons in first layer (they will contain 18 weights each for the inputs)
+	std::vector<double> weights_neuron_layer0_neuron0;
+	std::vector<double> weights_neuron_layer0_neuron1;
+     	std::vector<double> weights_neuron_layer0_neuron2;
+	std::vector<double> weights_neuron_layer0_neuron3;
+	std::vector<double> weights_neuron_layer0_neuron4;
+	std::vector<double> weights_neuron_layer0_neuron5;
+	std::vector<double> weights_neuron_layer0_neuron6;
+
 	genes()
 	{
-	    size_growing_energy_cost = 0.0;
-	    size_growing_factor = 0.0;
-	    pregnancy_growth = 0.0;
-	    movement_speed = 0.0;
-	    movement_energy_efficiency = 0.0;
+    	    size_growing_energy_cost = 0.0;
+    	    size_growing_factor = 0.0;
+    	    pregnancy_growth = 0.0;
+    	    movement_speed = 0.0;
+    	    movement_energy_efficiency = 0.0;
 	    movement_energy_size_impact = 0.0;
 	    givingbirth_energy_efficiency = 0.0;
 	    givingbirth_size_cost = 0.0;
 	    energy_from_size_trigger = 0.0;
 	    energy_from_size_factor = 0.0;
+
+	    // add 18 default values for each of the neurons weights
+	    for(int k=0; k<18; ++k)
+	    {
+		weights_neuron_layer0_neuron0.push_back(0.0);
+		weights_neuron_layer0_neuron1.push_back(0.0);
+	    	weights_neuron_layer0_neuron2.push_back(0.0);
+	    	weights_neuron_layer0_neuron3.push_back(0.0);
+	    	weights_neuron_layer0_neuron4.push_back(0.0);
+	    	weights_neuron_layer0_neuron5.push_back(0.0);
+	    	weights_neuron_layer0_neuron6.push_back(0.0);
+	    }
 	}
 
-
+	void randomize()
+	{
+	    //TODO
+	}
      
      };
 /*

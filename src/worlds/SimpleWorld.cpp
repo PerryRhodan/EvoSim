@@ -102,6 +102,9 @@ void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
     if(agent.state.energy < agent.genes.energy_from_size_trigger * agent.state.size)
     {
 	double converted = agent.genes.energy_from_size_factor * agent.state.size;
+	if(converted >= agent.state.size)
+	    converted = agent.state.size * 0.9;
+
 	agent.state.size -= converted;
 	agent.state.energy += converted;
     }
@@ -114,7 +117,6 @@ void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
 	agent.state.size += growth;
 	agent.state.energy -= energy_cost;
     }
-
 }
 
 ////////////////////////////////////////

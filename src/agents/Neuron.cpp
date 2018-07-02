@@ -22,8 +22,9 @@ Neuron::~Neuron()
 
 void Neuron::update_weights(std::vector<double> neweights)
 {
+    std::cout << "Neuron:: update_weights" << std::endl;
     if(weights.size() != neweights.size()) {
-	std::cout << "Neuron: Given new weights vector size of " << neweights.size()
+	std::cout << "Neuron:: update_weights: Given new weights vector size of " << neweights.size()
 	       	<< " does not match weights vector size of " << weights.size() 
 	       	<< std::endl;
 	return;
@@ -39,11 +40,14 @@ void Neuron::update_weights(std::vector<double> neweights)
 void Neuron::calculate(std::vector<double> inputs)
 {
     if(inputs.size() != weights.size()) {
-	std::cout << "Neuron: Given input vector size of " << inputs.size()
+	std::cout << "Neuron:: calculate: Given input vector size of " << inputs.size()
 	       	<< " does not match weights vector size of " << weights.size() 
 	       	<< std::endl;
 	return;
     }
+
+    std::cout << "Neuron::calculate" << std::endl;
+    //print();
 
     // sum up weighted inputs
     output = 0.0;
@@ -56,3 +60,20 @@ void Neuron::calculate(std::vector<double> inputs)
     if(output < 0)
 	output = 0.01 * output;
 }
+
+//////////////////////////////////////
+
+void Neuron::print()
+{
+   std::cout << "Neuron::print" << std::endl;
+   for (int k=0; k<weights.size(); ++k)
+   {
+	std::cout << "Neuron:: weight " << k << ":" << weights[k] << std::endl;
+   }
+}
+
+
+
+
+
+

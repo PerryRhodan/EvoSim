@@ -10,6 +10,7 @@ class Neuron
 	Neuron(int in);
 	~Neuron();
 
+
 	// calculate output based on 
 	// given inputs
 	// and current weights
@@ -17,6 +18,11 @@ class Neuron
 
 	// update weights
 	void update_weights(std::vector<double> neweights);
+
+	// print current weights
+	void print();
+
+//////////////////////////////////////////////////////
 
 	// vector of the weights for each of the inputs
 	std::vector<double> weights;

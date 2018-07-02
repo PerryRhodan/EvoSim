@@ -5,7 +5,14 @@
 
 Brain::Brain()
 {
-
+    // set up the hidden layers
+    // TODO for now have only one layer
+    // 7 neurons needed for outputs
+    for(int k=0; k< 7; k++) {
+	neuron_layer_hidden_0.push_back(std::make_unique<Neuron>(18)); // 18 weights for each neuron
+//	neuron_layer_hidden_1.push_back(std::make_unique<Neuron>());
+//	neuron_layer_hidden_2.push_back(std::make_unique<Neuron>());
+    } 
 
 }
 
@@ -13,6 +20,23 @@ Brain::~Brain()
 {
 
 
+}
+
+/////////////////////////////////////////////////////////
+
+void Brain::set_weights(std::vector<std::vector<double>> vec_weights)
+{
+    if(vec_weights.size() != neuron_layer_hidden_0.size())
+ 	std::cout << "Brain:: set_weights: Given vec_weights.size does "
+	    << "not match neuron_layer size: "
+	    << vec_weights.size() << " vs " << neuron_layer_hidden_0.size()
+	    << std::endl;
+    // for each neuron
+    for(int k=0; k<vec_weights.size(); k++)
+    {
+	// update weights
+	neuron_layer_hidden_0[k]->update_weights( vec_weights[k] );	
+    }
 }
 
 /////////////////////////////////////////////////////////
@@ -37,35 +61,34 @@ void Brain::calculate_actions(AgentData::actions & actions
     inputs.push_back(vision_food.right);
     inputs.push_back(vision_food.left);
     inputs.push_back(vision_food.back);
+    inputs.push_back(vision_food.center);
     inputs.push_back(vision_agents.front);
     inputs.push_back(vision_agents.right);
     inputs.push_back(vision_agents.left);
     inputs.push_back(vision_agents.back);
+    inputs.push_back(vision_agents.center);
+    //  = 18
 
+    // print inputs
+    for(int k=0; k<inputs.size(); ++k)
+    {
+	std::cout << "Brain:: input[" << k << "]: " << inputs[k] << std::endl;
+    }
 
-
-    
-	
-    // TODO return here for now, as neurons are not yet set up
-    // TODO hard code some actions for testing
-    std::cout << "Brain:: hardcoding some actions" << std::endl;
-    actions.move_forewards = 0.4;
-    actions.eat = 0.1;
-    
-    return;
-
-
-
-
-
-    std::vector<double> inputs_layer1;
+    /*
+    std::vector<double> inputs_layer1; 
+    */
+    // TODO for now have only one layer
+    std::vector<double> outputs;
+ 
     // set first layer
     for(int k=0; k<neuron_layer_hidden_0.size(); ++k)
     {
 	neuron_layer_hidden_0[k]->calculate(inputs);
-	inputs_layer1.push_back(neuron_layer_hidden_0[k]->output);
+	outputs.push_back(neuron_layer_hidden_0[k]->output);
     }
 
+    /*
     std::vector<double> inputs_layer2;
     // set second layer
     for(int k=0; k<neuron_layer_hidden_1.size(); ++k)
@@ -74,14 +97,13 @@ void Brain::calculate_actions(AgentData::actions & actions
     	inputs_layer2.push_back(neuron_layer_hidden_1[k]->output);
     }     
 
-    std::vector<double> outputs;
-    // set third layer
+       // set third layer
     for(int k=0; k<neuron_layer_hidden_2.size(); ++k)
     {
 	neuron_layer_hidden_2[k]->calculate(inputs_layer2);
 	outputs.push_back(neuron_layer_hidden_2[k]->output);
     }
-
+    */
 
     // set actions based on outputs
     // Output:

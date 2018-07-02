@@ -28,7 +28,7 @@ find_package (catkin COMPONENTS roscpp rospy std_msgs)
 #########################################
 #######
 
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "-std=c++14")
 
 
 ######

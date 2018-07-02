@@ -20,6 +20,7 @@ class Brain
 			, AgentData::visibility_food vision_food
 			, AgentData::visibility_agents vision_agents);
 
+	void set_weights(std::vector<std::vector<double>> vec_weights);
 
 	// Neurons
 	// Input:
@@ -30,8 +31,8 @@ class Brain
 	// Output:
         // give birth, move foreward, turn left, turn right, eat,
         // and attack	
-	std::vector<std::shared_ptr<Neuron>> neuron_layer_hidden_0;
-	std::vector<std::shared_ptr<Neuron>> neuron_layer_hidden_1;
-	std::vector<std::shared_ptr<Neuron>> neuron_layer_hidden_2;
+	std::vector<std::unique_ptr<Neuron>> neuron_layer_hidden_0;
+	std::vector<std::unique_ptr<Neuron>> neuron_layer_hidden_1;
+	std::vector<std::unique_ptr<Neuron>> neuron_layer_hidden_2;
 
 };
