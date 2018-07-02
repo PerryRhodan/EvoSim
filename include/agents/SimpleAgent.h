@@ -2,41 +2,17 @@
 
 #include "IAgent.h"
 #include <iostream>
-
+#include <vector>
+#include <memory>
 #include <Eigen/Dense>
+#include "Neuron.h"
+#include "Brain.h"
+#include "AgentData.h"
 
 class SimpleAgent : public IAgent
 {
-     // the food values of the areas around the agent
-     struct food_in_vision {
-	double front;
-	double right;
-	double left;
-	double back;
-     
-     	food_in_vision() {
-	    front = 0.0;
-	    right = 0.0;
-	    left = 0.0;
-	    back = 0.0;
-	};
-     };
 
-
-     // the sizes of other agents in the areas around this agent
-     struct agent_in_vision {
-	double front;
-	double right;
-	double left;
-	double back;
-
-	agent_in_vision() {
-	    front = 0.0;
-	    right = 0.0;
-	    left = 0.0;
-	    back = 0.0;
-	};
-     };
+///////////////////////////////////////////////////////////////////////////////////
 
      public:
 	SimpleAgent();
@@ -47,8 +23,8 @@ class SimpleAgent : public IAgent
 	void receive_parents_traits(SimpleAgent & parent);
 
 
-	void update(double delta);
 
+	void update(double delta);
 	void print();
 
 //////////////////////////////////////////////
@@ -56,15 +32,36 @@ class SimpleAgent : public IAgent
 	// position and motion
 	Eigen::Vector3d position;
 	Eigen::Vector3d velocity;
+	Eigen::Vector3d heading; //unit vector of direction
 
-	// current size
-	double size;
+	// current sensor inputs
+	AgentData::visibility_food vision_food;
+	AgentData::visibility_agents vision_agents;
 
-	// current age
-	double age;
+	// current state
+	AgentData::state state;
 
-	// current energy
-	double energy;
+	// current actions
+	AgentData::actions actions;
+
+	// genes
+	AgentData::genes genes;
+
+	// memory, remembers the last x events,
+	// x is based on genes, and costs 
+	// more energy to sustain
+	//std::vector<actions> memory_actions;
+	//std::vector<position> memory_position;
+	//std::vector<vision_food> memory_vision_food;
+	//std::vector<vision_agents> memory_vision_agents;
+	//std::vector<state> memory_state;
+
+/////////////////////////////////////////////
+
+
+	Brain brain;
+
+
 
 
 };

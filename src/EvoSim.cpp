@@ -21,6 +21,13 @@ EvoSim::EvoSim()
     //m_pworld = std::make_shared<IWorld>(); TODO
     m_pworld = std::make_shared<SimpleWorld>();
     std::cout << "EvoSim using world: " << m_pworld->m_str_name << std::endl;
+
+    // TODO idea
+    // Run sim until all agents died
+    // Remember x most successful (in terms of age) genes
+    // Remember genes for each category (predator, food harvest, highest reproduction..)
+    // Restart using these genes
+
 }
 
 EvoSim::~EvoSim()

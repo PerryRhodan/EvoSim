@@ -46,6 +46,8 @@ set(SRC_FILES
 	"src/EvoSim.cpp"
 	"src/agents/IAgent.cpp"
 	"src/agents/SimpleAgent.cpp"
+	"src/agents/Brain.cpp"
+	"src/agents/Neuron.cpp"
 	"src/worlds/IWorld.cpp"
 	"src/worlds/SimpleWorld.cpp"
 	)
