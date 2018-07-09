@@ -53,12 +53,17 @@ void Neuron::calculate(std::vector<double> inputs)
     output = 0.0;
     for(int i=0; i<number_inputs; ++i)
     {
-	output += inputs[i] * weights[i];
+	// map inputs to [0,100[
+	output += inputs[i]/100.0 * weights[i];
+
     }
 
-    // activation function (leaky relu)
-    if(output < 0)
-	output = 0.01 * output;
+    // // activation function (leaky relu)
+    //if(output < 0)
+    //     output = 0.01 * output;
+   
+    // activation function (sigmoid)
+    output = 1/(1 + exp(-output));
 }
 
 //////////////////////////////////////

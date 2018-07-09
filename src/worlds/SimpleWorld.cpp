@@ -6,7 +6,7 @@ SimpleWorld::SimpleWorld()
     m_str_name = "simple_world";
 
     // set up physical laws
-    physical_laws.size_energy_cost = 0.001;
+    physical_laws.size_energy_cost = 0.1;
     physical_laws.size_base_growth = 1.0;
 
 
@@ -39,6 +39,9 @@ void SimpleWorld::update_world(double delta)
 /////// agent reception of the world
 void SimpleWorld::update_agent_reception(double delta, SimpleAgent & agent)
 {
+    if(!agent.alive)
+	return;
+
     std::cout << "update simple agent reception" << std::endl;
     // TODO handle reception of food and agents
 
@@ -47,28 +50,37 @@ void SimpleWorld::update_agent_reception(double delta, SimpleAgent & agent)
 /////// agent actions in the world
 void SimpleWorld::update_agent_actions(double delta, SimpleAgent & agent)
 {
+    if(!agent.alive)
+	return;
+
     // TODO handle actions effects on world and
     // agent itself
 
     // TODO for testing some simple food just bein available
-    agent.state.energy += agent.actions.eat * 1.0;
+    agent.state.energy += agent.actions.eat * 1;
+
+    std::cout << "SimpleWorld:: agent.actions.eat: " << agent.actions.eat << std::endl;
 
     // TODO apply energy costs for moving, giving birth, etc here
-
+    // position update is handled in separate function
+    
 
 }
 
 /////// agents position and motion
 void SimpleWorld::update_agent_position(double delta, SimpleAgent & agent)
 {
+    if(!agent.alive)
+	return;
+
     // update heading
     // heading(0, 0) TODO
 
     // establish acceleration
     agent.velocity(0, 0) += agent.heading(0, 0) * agent.actions.move_forewards
-	    - agent.heading(0, 0) * agent.actions.move_backwards; // TODO * gene_speed
+	    - agent.heading(0, 0) * agent.actions.move_backwards * agent.genes.movement_speed;
     agent.velocity(1, 0) += agent.heading(1, 0) * agent.actions.move_forewards
-	    - agent.heading(1, 0) * agent.actions.move_backwards;
+	    - agent.heading(1, 0) * agent.actions.move_backwards * agent.genes.movement_speed;
 
     // update position
     agent.position += agent.velocity * delta;
@@ -78,7 +90,9 @@ void SimpleWorld::update_agent_position(double delta, SimpleAgent & agent)
 
 /////// agents stats
 void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
-{ 
+{
+    std::cout << "SimpleWorld:: delta: " << delta << std::endl;
+
     // rotting
     if(!agent.alive)
     {	
@@ -90,7 +104,7 @@ void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
     if(agent.state.energy <= 0.0)
 	agent.alive = false;
     else
-	agent.state.age =+ delta;
+	agent.state.age += delta;
 
     // energy consumption
     agent.state.energy -=
@@ -117,6 +131,10 @@ void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
 	agent.state.size += growth;
 	agent.state.energy -= energy_cost;
     }
+
+    // pregnancy growth
+    
+
 }
 
 ////////////////////////////////////////
@@ -131,7 +149,8 @@ void SimpleWorld::update_agents(double delta)
 	update_agent_stats(delta, (*a) );
 	a->update(delta);
 
-	//if(a->state.size <= 0)
+	// remove agents that have rotten away completely
+	//if(a->state.size <= 0) TODO
 	// mark for removeal
     }
 }

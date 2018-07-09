@@ -135,7 +135,36 @@ class AgentData
 
 	void randomize()
 	{
-	    //TODO
+	    size_growing_energy_cost = random_double();
+    	    size_growing_factor = random_double();
+	    pregnancy_growth = random_double();
+	    movement_speed = random_double();
+    	    movement_energy_efficiency = random_double();
+	    movement_energy_size_impact = random_double();
+	    givingbirth_energy_efficiency = random_double();
+	    givingbirth_size_cost = random_double();
+	    energy_from_size_trigger = random_double();
+	    energy_from_size_factor = random_double();
+
+	    // add 18 default values for each of the neurons weights
+	    for(int k=0; k<18; ++k)
+	    {
+	    	weights_neuron_layer0_neuron0[k] = random_double();
+		weights_neuron_layer0_neuron1[k] = random_double();
+	    	weights_neuron_layer0_neuron2[k] = random_double();
+		weights_neuron_layer0_neuron3[k] = random_double();
+		weights_neuron_layer0_neuron4[k] = random_double();
+		weights_neuron_layer0_neuron5[k] = random_double();
+		weights_neuron_layer0_neuron6[k] = random_double();
+	    }
+	}
+
+	double random_double() {
+	    std::random_device rd;
+	    std::default_random_engine dre(rd());
+	    std::uniform_int_distribution<int> uniform_dist(1,100);
+	    return ((double)uniform_dist(dre))/100.0;
+	    
 	}
      
      };

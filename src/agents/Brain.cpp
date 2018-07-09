@@ -36,6 +36,9 @@ void Brain::set_weights(std::vector<std::vector<double>> vec_weights)
     {
 	// update weights
 	neuron_layer_hidden_0[k]->update_weights( vec_weights[k] );	
+
+	std::cout << "Brain::set_weights layer k: " << k << std::endl;
+	neuron_layer_hidden_0[k]->print();
     }
 }
 
@@ -104,6 +107,12 @@ void Brain::calculate_actions(AgentData::actions & actions
 	outputs.push_back(neuron_layer_hidden_2[k]->output);
     }
     */
+
+    // print outputs
+    for(int k=0; k<outputs.size(); ++k)
+    {
+	std::cout << "Brain:: output[" << k << "]: " << outputs[k] << std::endl;
+    }
 
     // set actions based on outputs
     // Output:

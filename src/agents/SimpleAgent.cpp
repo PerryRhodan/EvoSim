@@ -19,8 +19,8 @@ SimpleAgent::SimpleAgent()
 
     // TODO for test
     state.size = 10.0;
-
-
+    state.energy = 10.0;
+    genes.randomize();
 
     // ini initial default brain weights
     std::vector<std::vector<double>> vec_weights;
@@ -55,8 +55,7 @@ void SimpleAgent::receive_parents_traits(SimpleAgent & parent)
 
 
     // neuron weights
-    // TODO
-
+    genes.randomize();
 
     // set up brain
     std::vector<std::vector<double>> vec_weights;
