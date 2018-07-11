@@ -9,7 +9,18 @@ SimpleWorld::SimpleWorld()
     physical_laws.size_energy_cost = 0.1;
     physical_laws.size_base_growth = 1.0;
 
-
+    // create tiles
+    width = 10;
+    height = 10;
+    for (int w=0; w<width; ++w)
+    {
+	std::vector<double> foods;
+	for (int h=0; h<height; ++h)
+	{
+	    foods.push_back(10.0);
+	}
+	tiles.push_back(foods);
+    }
 
     // TODO for testing add an agent here
     std::shared_ptr<SimpleAgent> agent = std::make_shared<SimpleAgent>();
@@ -42,8 +53,18 @@ void SimpleWorld::update_agent_reception(double delta, SimpleAgent & agent)
     if(!agent.alive)
 	return;
 
-    std::cout << "update simple agent reception" << std::endl;
-    // TODO handle reception of food and agents
+    int x = agent.position(0, 0);
+    int y = agent.position(1, 0);
+    int x_front = x + 2*agent.heading(0, 0);
+    int y_front = y + 2*agent.heading(1, 0);
+
+    if(x_front >= width)
+	x_front -= width;
+    if(y_front >= height)
+	y_front -= height;
+
+    agent.vision_food.center = tiles[x][y];
+    agent.vision_food.front = tiles[x_front][y_front];
 
 }
 
@@ -57,9 +78,17 @@ void SimpleWorld::update_agent_actions(double delta, SimpleAgent & agent)
     // agent itself
 
     // TODO for testing some simple food just bein available
-    agent.state.energy += agent.actions.eat * 1;
+    double food_to_eat = agent.actions.eat * 1;
+    double food_available = tiles[agent.position(0, 0)][agent.position(1, 0)];
+    if(food_available < food_to_eat)
+	food_to_eat = food_available;
+   
+    std::cout << "SimpleWorld:: food_to_eat: " << food_to_eat << std::endl;
 
-    std::cout << "SimpleWorld:: agent.actions.eat: " << agent.actions.eat << std::endl;
+    agent.state.energy += food_to_eat; // TODO * efficiency, etc
+    tiles[agent.position(0, 0)][agent.position(1, 0)] -= food_to_eat;
+
+    std::cout << "SimpleWorld:: food_available: " << food_available << std::endl;
 
     // TODO apply energy costs for moving, giving birth, etc here
     // position update is handled in separate function
@@ -82,8 +111,20 @@ void SimpleWorld::update_agent_position(double delta, SimpleAgent & agent)
     agent.velocity(1, 0) += agent.heading(1, 0) * agent.actions.move_forewards
 	    - agent.heading(1, 0) * agent.actions.move_backwards * agent.genes.movement_speed;
 
+    std::cout << "SimpleWorld:: agent.velocity: [" << agent.velocity(0, 0) << ", "
+	   << agent.velocity(1, 0) << "]" << std::endl; 
+
+
+
     // update position
     agent.position += agent.velocity * delta;
+
+    // check tiles boundaries
+    if(agent.position(0, 0) >= width)
+	agent.position(0, 0) -= width;
+    if(agent.position(1, 0) >= height)
+	agent.position(1, 0) -= height;
+
     agent.velocity *= 0.0; // reset velocity
 
 }
@@ -109,8 +150,9 @@ void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
     // energy consumption
     agent.state.energy -=
 	(
-	 agent.state.size * physical_laws.size_energy_cost * delta
-	 );
+	 agent.state.size * physical_laws.size_energy_cost +
+	 physical_laws.base_energy_cost
+	 ) * delta;
 
     // if energy smaller a percentage of size, convert size to energy
     if(agent.state.energy < agent.genes.energy_from_size_trigger * agent.state.size)
@@ -120,7 +162,7 @@ void SimpleWorld::update_agent_stats(double delta, SimpleAgent & agent)
 	    converted = agent.state.size * 0.9;
 
 	agent.state.size -= converted;
-	agent.state.energy += converted;
+	agent.state.energy += converted * agent.genes.energy_from_size_factor;
     }
     
     // size growth

@@ -11,7 +11,7 @@ SimpleAgent::SimpleAgent()
     velocity(0, 0) = 0.0;
     velocity(1, 0) = 0.0;
     velocity(2, 0) = 0.0;
-    heading(0, 0) = 0.0;
+    heading(0, 0) = 1.0; // face up by default
     heading(1, 0) = 0.0;
     heading(2, 0) = 0.0;
 
@@ -93,7 +93,6 @@ void SimpleAgent::print()
     std::cout << "Energy:......." << state.energy << std::endl;
     std::cout << "Age:.........." << state.age << std::endl;
     std::cout << "Position:.....[" << position(0,0) << ", " << position(1,0) << "]" << std::endl;
-
 }
 
 

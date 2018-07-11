@@ -10,6 +10,7 @@ class SimpleWorld : public IWorld
     struct physical_laws {
 
 	double size_energy_cost; // energy cost per size per second
+	double base_energy_cost; // base energy cost per second
 
 	double size_base_growth;
 	double size_growing_energy_cost;
@@ -27,6 +28,7 @@ class SimpleWorld : public IWorld
 	physical_laws()
 	{
 	    size_energy_cost = 0.0;
+	    base_energy_cost = 0.0;
 
 	    size_base_growth = 0.0;
 	    size_growing_energy_cost = 0.0;
@@ -56,6 +58,11 @@ class SimpleWorld : public IWorld
 	////////////////////////////////////////////
 
 	physical_laws physical_laws;
+
+	// tile width and height
+	int width;
+	int height;
+	std::vector<std::vector<double> > tiles; // tiles of food
 
     private:
 	/** update the reception of an agent, ie what an agents 
