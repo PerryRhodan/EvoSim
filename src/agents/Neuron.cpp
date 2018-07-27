@@ -46,9 +46,6 @@ void Neuron::calculate(std::vector<double> inputs)
 	return;
     }
 
-    std::cout << "Neuron::calculate" << std::endl;
-    //print();
-
     // sum up weighted inputs
     output = 0.0;
     for(int i=0; i<number_inputs; ++i)

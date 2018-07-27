@@ -8,6 +8,7 @@
 #include "Neuron.h"
 #include "Brain.h"
 #include "AgentData.h"
+#include "../worlds/WorldData.h"
 
 class SimpleAgent : public IAgent
 {
@@ -22,17 +23,17 @@ class SimpleAgent : public IAgent
 	// one, and does not need a mating partner
 	void receive_parents_traits(SimpleAgent & parent);
 
-
-
-	void update(double delta);
+	// Update with given physical laws of the world
+	void update(double delta, WorldData::physical_laws laws
+			, double available_food);
 	void print();
 
 //////////////////////////////////////////////
-	
+
 	// position and motion
-	Eigen::Vector3d position;
-	Eigen::Vector3d velocity;
-	Eigen::Vector3d heading; //unit vector of direction
+	Eigen::Vector2d position;
+	Eigen::Vector2d velocity;
+	Eigen::Vector2d heading; //unit vector of direction
 
 	// current sensor inputs
 	AgentData::visibility_food vision_food;
@@ -46,6 +47,8 @@ class SimpleAgent : public IAgent
 
 	// genes
 	AgentData::genes genes;
+	AgentData::genes_neural_weights genes_neural_weights;
+
 
 	// memory, remembers the last x events,
 	// x is based on genes, and costs 

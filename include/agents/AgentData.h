@@ -83,10 +83,11 @@ class AgentData
 
      // Genes modified in mutation
      // The values should all be [0..1]
+     // 
      struct genes {
 	double size_growing_energy_cost;
 	double size_growing_factor;
-
+	double size_growing_efficiency;
 	double pregnancy_growth;
 	double movement_speed;
 	double movement_energy_efficiency;
@@ -97,6 +98,64 @@ class AgentData
 	double energy_from_size_trigger;// percentage of size of energy remaining,
        					// after which size is converted into energy
 	double energy_from_size_factor;
+	double energy_from_size_efficiency;
+
+
+
+	// learning values below make up a cost function
+	// the agent evaluates its current neural weights
+	// agains
+	// TODO 
+
+	genes()
+	{
+    	    size_growing_energy_cost = 0.0;
+    	    size_growing_factor = 0.0;
+    	    size_growing_efficiency = 0.0;
+	    pregnancy_growth = 0.0;
+    	    movement_speed = 0.0;
+    	    movement_energy_efficiency = 0.0;
+	    movement_energy_size_impact = 0.0;
+	    givingbirth_energy_efficiency = 0.0;
+	    givingbirth_size_cost = 0.0;
+	    energy_from_size_trigger = 0.0;
+	    energy_from_size_factor = 0.0;
+	    energy_from_size_efficiency = 0.0;
+
+	}
+
+	void randomize()
+	{
+	    size_growing_energy_cost = random_double();
+    	    size_growing_factor = random_double();
+	    size_growing_efficiency = random_double();
+	    pregnancy_growth = random_double();
+	    movement_speed = random_double();
+    	    movement_energy_efficiency = random_double();
+	    movement_energy_size_impact = random_double();
+	    givingbirth_energy_efficiency = random_double();
+	    givingbirth_size_cost = random_double();
+	    energy_from_size_trigger = random_double();
+	    energy_from_size_factor = random_double();
+	    energy_from_size_efficiency = random_double();
+
+	}
+
+	double random_double() {
+	    std::random_device rd;
+	    std::default_random_engine dre(rd());
+	    std::uniform_int_distribution<int> uniform_dist(1,100);
+	    return ((double)uniform_dist(dre))/100.0;
+	    
+	}
+     
+     };
+
+     // Genes used as weights in the brain
+     // These can be adjusted throughout the lifetime
+     // of the agent, ie learning!
+     struct genes_neural_weights
+     {
 
 	// 7 neurons in first layer (they will contain 18 weights each for the inputs)
 	std::vector<double> weights_neuron_layer0_neuron0;
@@ -107,19 +166,8 @@ class AgentData
 	std::vector<double> weights_neuron_layer0_neuron5;
 	std::vector<double> weights_neuron_layer0_neuron6;
 
-	genes()
+	genes_neural_weights()
 	{
-    	    size_growing_energy_cost = 0.0;
-    	    size_growing_factor = 0.0;
-    	    pregnancy_growth = 0.0;
-    	    movement_speed = 0.0;
-    	    movement_energy_efficiency = 0.0;
-	    movement_energy_size_impact = 0.0;
-	    givingbirth_energy_efficiency = 0.0;
-	    givingbirth_size_cost = 0.0;
-	    energy_from_size_trigger = 0.0;
-	    energy_from_size_factor = 0.0;
-
 	    // add 18 default values for each of the neurons weights
 	    for(int k=0; k<18; ++k)
 	    {
@@ -132,30 +180,18 @@ class AgentData
 	    	weights_neuron_layer0_neuron6.push_back(0.0);
 	    }
 	}
-
-	void randomize()
-	{
-	    size_growing_energy_cost = random_double();
-    	    size_growing_factor = random_double();
-	    pregnancy_growth = random_double();
-	    movement_speed = random_double();
-    	    movement_energy_efficiency = random_double();
-	    movement_energy_size_impact = random_double();
-	    givingbirth_energy_efficiency = random_double();
-	    givingbirth_size_cost = random_double();
-	    energy_from_size_trigger = random_double();
-	    energy_from_size_factor = random_double();
-
-	    // add 18 default values for each of the neurons weights
+	
+	void randomize() {
+	    
 	    for(int k=0; k<18; ++k)
-	    {
-	    	weights_neuron_layer0_neuron0[k] = random_double();
+ 	    {
+		weights_neuron_layer0_neuron0[k] = random_double();
 		weights_neuron_layer0_neuron1[k] = random_double();
 	    	weights_neuron_layer0_neuron2[k] = random_double();
-		weights_neuron_layer0_neuron3[k] = random_double();
-		weights_neuron_layer0_neuron4[k] = random_double();
-		weights_neuron_layer0_neuron5[k] = random_double();
-		weights_neuron_layer0_neuron6[k] = random_double();
+	    	weights_neuron_layer0_neuron3[k] = random_double();
+	    	weights_neuron_layer0_neuron4[k] = random_double();
+	    	weights_neuron_layer0_neuron5[k] = random_double();
+	    	weights_neuron_layer0_neuron6[k] = random_double();
 	    }
 	}
 
@@ -166,35 +202,6 @@ class AgentData
 	    return ((double)uniform_dist(dre))/100.0;
 	    
 	}
-     
      };
-/*
-	double gene_neuron_middle_0;
-	double gene_neuron_middle_1;
-	double gene_neuron_middle_2;
-	double gene_neuron_middle_3;
-	double gene_neuron_middle_4;
-	double gene_neuron_middle_5;
-	double gene_neuron_middle_6;
-	double gene_neuron_middle_7;
-	double gene_neuron_middle_8;
-	double gene_neuron_middle_9;
-	double gene_rotting_speed;
-	double gene_size_growing_speed;
-	double gene_pregnancy_growth;
-	double gene_sensitiviy_mutations;
-	double gene_effectiveness_sense_food_front;	
-	double gene_effectiveness_sense_food_right;
-	double gene_effectiveness_sense_food_left;
-	double gene_effectiveness_sense_food_back;
-	double gene_effectiveness_sense_agents_front;
-	double gene_effectiveness_sense_agents_right;
-	double gene_effectiveness_sense_agents_left;
-	double gene_effectiveness_sense_agents_back;
-	double gene_moving_speed;
-	double gene_moving_efficiency;
-	double gene_attack_strength;
-	double gene_attack_efficiency;
-*/
 
 };

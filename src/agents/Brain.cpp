@@ -46,8 +46,8 @@ void Brain::set_weights(std::vector<std::vector<double>> vec_weights)
 
 void Brain::calculate_actions(AgentData::actions & actions
 			, AgentData::state state
-			, Eigen::Vector3d position
-			, Eigen::Vector3d heading
+			, Eigen::Vector2d position
+			, Eigen::Vector2d heading
 			, AgentData::visibility_food vision_food
 			, AgentData::visibility_agents vision_agents)
 { 
@@ -73,10 +73,10 @@ void Brain::calculate_actions(AgentData::actions & actions
     //  = 18
 
     // print inputs
-    for(int k=0; k<inputs.size(); ++k)
-    {
-	std::cout << "Brain:: input[" << k << "]: " << inputs[k] << std::endl;
-    }
+//    for(int k=0; k<inputs.size(); ++k)
+//    {
+//	std::cout << "Brain:: input[" << k << "]: " << inputs[k] << std::endl;
+//    }
 
     /*
     std::vector<double> inputs_layer1; 
@@ -109,10 +109,10 @@ void Brain::calculate_actions(AgentData::actions & actions
     */
 
     // print outputs
-    for(int k=0; k<outputs.size(); ++k)
-    {
-	std::cout << "Brain:: output[" << k << "]: " << outputs[k] << std::endl;
-    }
+//    for(int k=0; k<outputs.size(); ++k)
+//    {
+//	std::cout << "Brain:: output[" << k << "]: " << outputs[k] << std::endl;
+//    }
 
     // set actions based on outputs
     // Output:

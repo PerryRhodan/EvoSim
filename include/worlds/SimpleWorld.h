@@ -3,46 +3,12 @@
 #include <iostream>
 #include "IWorld.h"
 #include "../agents/SimpleAgent.h"
+#include <Eigen/Geometry>
+#include "WorldData.h"
+
 
 class SimpleWorld : public IWorld
 {
-
-    struct physical_laws {
-
-	double size_energy_cost; // energy cost per size per second
-	double base_energy_cost; // base energy cost per second
-
-	double size_base_growth;
-	double size_growing_energy_cost;
-
-	double givingbirth_size_cost;
-	double givingbirth_energy_cost;
-
-	double movement_energy_cost_per_size;
-
-
-	double visibility_agents;
-	double visibility_food;
-
-
-	physical_laws()
-	{
-	    size_energy_cost = 0.0;
-	    base_energy_cost = 0.0;
-
-	    size_base_growth = 0.0;
-	    size_growing_energy_cost = 0.0;
-
-	    givingbirth_size_cost = 0.0;
-	    givingbirth_energy_cost = 0.0;
-	    
-	    movement_energy_cost_per_size = 0.0;
-
-	    visibility_agents = 0.0;
-	    visibility_food = 0.0;
-	}
-    };
-
 
 
 
@@ -57,7 +23,7 @@ class SimpleWorld : public IWorld
 
 	////////////////////////////////////////////
 
-	physical_laws physical_laws;
+	WorldData::physical_laws physical_laws;
 
 	// tile width and height
 	int width;
@@ -69,14 +35,16 @@ class SimpleWorld : public IWorld
 	 *  picks up based on its position in the world */
 	void update_agent_reception(double delta, SimpleAgent & agent);
 
-	void update_agent_position(double delta, SimpleAgent & agent);
-	void update_agent_actions(double delta, SimpleAgent & agent);
-	void update_agent_stats(double delta, SimpleAgent & agent);
+	void handle_agent_position(double delta, SimpleAgent & agent);
+	void handle_agent_actions(double delta, SimpleAgent & agent);
 
 	/** calls update function on all
 	 *  active agents, taking delta
 	 *  in seconds. */
 	void update_agents(double delta);
+
+	/** returns the available food from the given agents position */
+	double get_available_food(std::shared_ptr<SimpleAgent> agent);
 
 	/** vector of living agents */
 	std::vector<std::shared_ptr<SimpleAgent>> m_vpagents;

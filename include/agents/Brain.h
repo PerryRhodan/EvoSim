@@ -15,8 +15,8 @@ class Brain
 
 	void calculate_actions(AgentData::actions & actions
 			, AgentData::state state
-			, Eigen::Vector3d position
-			, Eigen::Vector3d heading
+			, Eigen::Vector2d position
+			, Eigen::Vector2d heading
 			, AgentData::visibility_food vision_food
 			, AgentData::visibility_agents vision_agents);
 
