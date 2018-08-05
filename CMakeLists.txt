@@ -44,12 +44,10 @@ include_directories(
 
 set(SRC_FILES 
 	"src/EvoSim.cpp"
-	"src/agents/IAgent.cpp"
-	"src/agents/SimpleAgent.cpp"
+	"src/agents/Agent.cpp"
 	"src/agents/Brain.cpp"
 	"src/agents/Neuron.cpp"
-	"src/worlds/IWorld.cpp"
-	"src/worlds/SimpleWorld.cpp"
+	"src/worlds/World.cpp"
 	)
 set(UNIT_TESTS 
 	"unit-tests/main.cpp" 

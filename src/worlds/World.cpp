@@ -1,7 +1,7 @@
-#include "../../include/worlds/SimpleWorld.h"
-#include "../../include/agents/SimpleAgent.h"
+#include "../../include/worlds/World.h"
+#include "../../include/agents/Agent.h"
 
-SimpleWorld::SimpleWorld()
+World::World()
 {
     m_str_name = "simple_world";
 
@@ -16,24 +16,24 @@ SimpleWorld::SimpleWorld()
     height = 10;
     for (int w=0; w<width; ++w)
     {
-	std::vector<double> foods;
-	for (int h=0; h<height; ++h)
-	{
-	    foods.push_back(10.0);
-	}
-	tiles.push_back(foods);
+        std::vector<double> foods;
+        for (int h=0; h<height; ++h)
+        {
+            foods.push_back(10.0);
+        }
+        tiles.push_back(foods);
     }
 
     // TODO for testing add an agent here
-    std::shared_ptr<SimpleAgent> agent = std::make_shared<SimpleAgent>();
+    std::shared_ptr<Agent> agent = std::make_shared<Agent>();
     agent->name = "ONE";
-    std::shared_ptr<SimpleAgent> agent2 = std::make_shared<SimpleAgent>();
+    std::shared_ptr<Agent> agent2 = std::make_shared<Agent>();
     agent2->name = "TWO";
-    std::shared_ptr<SimpleAgent> agent3 = std::make_shared<SimpleAgent>();
+    std::shared_ptr<Agent> agent3 = std::make_shared<Agent>();
     agent3->name = "THREE";
-    std::shared_ptr<SimpleAgent> agent4 = std::make_shared<SimpleAgent>();
+    std::shared_ptr<Agent> agent4 = std::make_shared<Agent>();
     agent4->name = "FOUR";
-    std::shared_ptr<SimpleAgent> agent5 = std::make_shared<SimpleAgent>();
+    std::shared_ptr<Agent> agent5 = std::make_shared<Agent>();
     agent5->name = "FIVE";
 
     m_vpagents.push_back(agent);
@@ -43,31 +43,38 @@ SimpleWorld::SimpleWorld()
     m_vpagents.push_back(agent5);
 }
 
-SimpleWorld::~SimpleWorld()
+World::~World()
 {
 
 
 }
 
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+void World::update(double delta)
+{
+    // update the world itself
+    update_world(delta);
+    // update the agents
+    update_agents(delta);
+}
+
 ////////////////////////////////////////
 
-void SimpleWorld::update_world(double delta)
+void World::update_world(double delta)
 {
-    std::cout << "update simple world" << std::endl;
-
-
-    // update agents
-    update_agents(delta);
+    // TODO
 }
 
 /////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
 /////// agent reception of the world
-void SimpleWorld::update_agent_reception(double delta, SimpleAgent & agent)
+void World::update_agent_reception(double delta, Agent & agent) const
 {
     if(!agent.alive)
-	return;
+    	return;
 
     int x = agent.position(0, 0);
     int y = agent.position(1, 0);
@@ -75,24 +82,23 @@ void SimpleWorld::update_agent_reception(double delta, SimpleAgent & agent)
     int y_front = y + 2*agent.heading(1, 0);
 
     if(x_front >= width)
-	x_front -= width;
+	    x_front -= width;
     if(y_front >= height)
-	y_front -= height;
+	    y_front -= height;
 
     agent.vision_food.center = tiles[x][y];
     agent.vision_food.front = tiles[x_front][y_front];
-
 }
 
 /////// agent actions in the world
-void SimpleWorld::handle_agent_actions(double delta, SimpleAgent & agent)
+void World::handle_agent_actions(double delta, Agent & agent)
 {
     if(!agent.alive)
     {
-	// handle rotting
-	double food_from_rotting = agent.state.size * 0.1 * delta; // TODO genes
-	tiles[agent.position(0,0)][agent.position(1,0)] += food_from_rotting;
-	return;
+        // handle rotting
+        double food_from_rotting = agent.state.size * 0.1 * delta; // TODO genes
+        tiles[agent.position(0,0)][agent.position(1,0)] += food_from_rotting;
+        return;
     }
 	
     // update world based on the agents actions   
@@ -110,7 +116,7 @@ void SimpleWorld::handle_agent_actions(double delta, SimpleAgent & agent)
 }
 
 /////// agents position and motion
-void SimpleWorld::handle_agent_position(double delta, SimpleAgent & agent)
+void World::handle_agent_position(double delta, Agent & agent) const
 {
     if(!agent.alive)
 	return;
@@ -120,14 +126,13 @@ void SimpleWorld::handle_agent_position(double delta, SimpleAgent & agent)
 
     agent.heading = t.toRotationMatrix() * agent.heading;
 
-
     // establish acceleration
     agent.velocity(0, 0) += agent.heading(0, 0) * agent.actions.move_forewards
 	    - agent.heading(0, 0) * agent.actions.move_backwards * agent.genes.movement_speed;
     agent.velocity(1, 0) += agent.heading(1, 0) * agent.actions.move_forewards
 	    - agent.heading(1, 0) * agent.actions.move_backwards * agent.genes.movement_speed;
 
-    std::cout << "SimpleWorld:: agent.velocity: [" << agent.velocity(0, 0) << ", "
+    std::cout << "World:: agent.velocity: [" << agent.velocity(0, 0) << ", "
 	   << agent.velocity(1, 0) << "]" << std::endl; 
 
 
@@ -136,40 +141,39 @@ void SimpleWorld::handle_agent_position(double delta, SimpleAgent & agent)
 
     // check tiles boundaries
     if(agent.position(0, 0) >= width)
-	agent.position(0, 0) -= width;
+	    agent.position(0, 0) -= width;
     if(agent.position(0, 0) < 0)
-	agent.position(0, 0) += width;
+	    agent.position(0, 0) += width;
     if(agent.position(1, 0) >= height)
-	agent.position(1, 0) -= height;
+	    agent.position(1, 0) -= height;
     if(agent.position(1, 0) < 0)
-	agent.position(1, 0) += height;
+	    agent.position(1, 0) += height;
 
     agent.velocity *= 0.0; // reset velocity
 }
 
-
 ////////////////////////////////////////
 
-void SimpleWorld::update_agents(double delta)
+void World::update_agents(double delta)
 {
     for( auto& a : m_vpagents)
     {
-	// first update agents with their current inputs and states
-	a->update(delta, physical_laws, get_available_food(a));
-	// handle their actions on the world, including movement
-	handle_agent_position(delta, (*a) );
-	handle_agent_actions(delta, (*a) );
-	// finally update their current reception of the world
-	update_agent_reception(delta, (*a) );
+        // first update agents with their current inputs and states
+        a->update(delta, physical_laws, get_available_food(a));
+        // handle their actions on the world, including movement
+        handle_agent_position(delta, (*a) );
+        handle_agent_actions(delta, (*a) );
+        // finally update their current reception of the world
+        update_agent_reception(delta, (*a) );
 
 
-	// remove agents that have rotten away completely
-	//if(a->state.size <= 0) TODO
-	// mark for removeal
+        // remove agents that have rotten away completely
+        //if(a->state.size <= 0) TODO
+        // mark for removeal
     }
 }
 
-double SimpleWorld::get_available_food(std::shared_ptr<SimpleAgent> agent)
+double World::get_available_food(std::shared_ptr<Agent> agent)
 {
     return tiles[agent->position(0,0)][agent->position(1,0)];
 }

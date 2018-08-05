@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IAgent.h"
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -10,30 +9,36 @@
 #include "AgentData.h"
 #include "../worlds/WorldData.h"
 
-class SimpleAgent : public IAgent
+class Agent
 {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-     public:
-	SimpleAgent();
-	~SimpleAgent();
+    public:
+	Agent();
+	~Agent();
 
 	// For now just assume one agent gives birth to a new
 	// one, and does not need a mating partner
-	void receive_parents_traits(SimpleAgent & parent);
+	void receive_parents_traits(Agent & parent);
 
 	// Update with given physical laws of the world
 	void update(double delta, WorldData::physical_laws laws
-			, double available_food);
+					, double available_food);
 	void print();
 
 //////////////////////////////////////////////
+
+	// the agents name, built up and modified from parent name
+	std::string name;
+	// flag to indicate if this agent is still alive
+	bool alive;	
 
 	// position and motion
 	Eigen::Vector2d position;
 	Eigen::Vector2d velocity;
 	Eigen::Vector2d heading; //unit vector of direction
+
 
 	// current sensor inputs
 	AgentData::visibility_food vision_food;
@@ -61,10 +66,6 @@ class SimpleAgent : public IAgent
 
 /////////////////////////////////////////////
 
-
 	Brain brain;
-
-
-
 
 };

@@ -19,7 +19,7 @@ EvoSim::EvoSim()
 {    
     // create default world
     //m_pworld = std::make_shared<IWorld>(); TODO
-    m_pworld = std::make_shared<SimpleWorld>();
+    m_pworld = std::make_shared<World>();
     std::cout << "EvoSim using world: " << m_pworld->m_str_name << std::endl;
 
     // TODO idea
@@ -75,8 +75,8 @@ void EvoSim::iteration()
     // restart timer
     if(EvoSim::flag_isrunning)
     {
-	m_piteration_timer->expires_at(m_piteration_timer->expires_at() + boost::posix_time::milliseconds(100));
-	m_piteration_timer->async_wait(boost::bind(&EvoSim::iteration, this));
+        m_piteration_timer->expires_at(m_piteration_timer->expires_at() + boost::posix_time::milliseconds(100));
+        m_piteration_timer->async_wait(boost::bind(&EvoSim::iteration, this));
     }
  }
 	

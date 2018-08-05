@@ -10,8 +10,7 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 
-#include "worlds/IWorld.h"
-#include "worlds/SimpleWorld.h"
+#include "worlds/World.h"
 
 class EvoSim
 {
@@ -50,6 +49,6 @@ class EvoSim
 
 	/////////////
 
-	/** the world to be simulated */
-	std::shared_ptr<IWorld> m_pworld;
+	/** the world to be simulated, run a simple world */
+	std::shared_ptr<World> m_pworld;
 };

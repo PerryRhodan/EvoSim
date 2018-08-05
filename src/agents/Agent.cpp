@@ -1,8 +1,10 @@
-#include "../../include/agents/SimpleAgent.h"
+#include "../../include/agents/Agent.h"
 
 
 
-SimpleAgent::SimpleAgent()
+Agent::Agent() :
+name("default"),
+alive(true)
 {
     
     position(0, 0) = 0.0;
@@ -31,7 +33,7 @@ SimpleAgent::SimpleAgent()
     brain.set_weights(vec_weights);
 }
 
-SimpleAgent::~SimpleAgent()
+Agent::~Agent()
 {
 
 	
@@ -39,7 +41,7 @@ SimpleAgent::~SimpleAgent()
 
 ////////////////////////////////////////////
 
-void SimpleAgent::receive_parents_traits(SimpleAgent & parent)
+void Agent::receive_parents_traits(Agent & parent)
 {
     //  Initial size and energy depends on parent.
     //  In other words, the bigger the more likely 
@@ -69,25 +71,26 @@ void SimpleAgent::receive_parents_traits(SimpleAgent & parent)
 
 /////////////////////////////////////////////
 
-void SimpleAgent::update(double delta, WorldData::physical_laws laws
-			, double available_food)
+void Agent::update(double delta, WorldData::physical_laws laws
+					, double available_food)
 {
     std::cout << std::endl;
     std::cout << std::endl;
-    std::cout << "SimpleAgent:: available_food: " << available_food << std::endl;
+    std::cout << "Agent:: available_food: " << available_food << std::endl;
+ 
 
     // rotting
     if(!alive)
     {	
-	state.size -= 0.1 * delta; // TODO genes effect
-	return;
+        state.size -= 0.1 * delta; // TODO genes effect
+        return;
     }	
 
     // aging and dying
     if(state.energy <= 0.0)
-	alive = false;
+	    alive = false;
     else
-	state.age += delta;
+	    state.age += delta;
 
     // neural activity to generate actions
     brain.calculate_actions(actions, state, position, heading, vision_food, vision_agents);
@@ -95,26 +98,26 @@ void SimpleAgent::update(double delta, WorldData::physical_laws laws
     // TODO for testing some simple food just bein available
     double food_to_eat = actions.eat * 1;
     if(available_food < food_to_eat)
-	food_to_eat = available_food;
+	    food_to_eat = available_food;
    
     state.energy += food_to_eat; // TODO * efficiency, etc
 
     // energy consumption
     state.energy -=
 	(
-	 state.size * laws.size_energy_cost +
-	 laws.base_energy_cost
-	 ) * delta;
+        state.size * laws.size_energy_cost +
+        laws.base_energy_cost
+	) * delta;
 
     // if energy smaller a percentage of size, convert size to energy
     if(state.energy < genes.energy_from_size_trigger * state.size)
     {
-	double converted = genes.energy_from_size_factor * state.size;
-	if(converted >= state.size)
-	    converted = state.size * 0.9;
+        double converted = genes.energy_from_size_factor * state.size;
+        if(converted >= state.size)
+            converted = state.size * 0.9;
 
-	state.size -= converted;
-	state.energy += converted * genes.energy_from_size_efficiency;
+        state.size -= converted;
+    	state.energy += converted * genes.energy_from_size_efficiency;
     }
     
     // size growth
@@ -122,13 +125,13 @@ void SimpleAgent::update(double delta, WorldData::physical_laws laws
     double energy_cost = growth * laws.size_growing_energy_cost;            
     if(state.energy > energy_cost)
     {	
-	state.size += growth * genes.size_growing_efficiency;
-	state.energy -= energy_cost;
+        state.size += growth * genes.size_growing_efficiency;
+        state.energy -= energy_cost;
     }
 
     // cap energy to max
     if(state.energy > laws.maximum_energy)
-	state.energy = laws.maximum_energy;
+    	state.energy = laws.maximum_energy;
 
     // pregnancy growth
     
@@ -143,10 +146,10 @@ void SimpleAgent::update(double delta, WorldData::physical_laws laws
 /////////////////////////////////////////////////
 
 
-void SimpleAgent::print()
+void Agent::print()
 {
-    std::cout << "SimpleAgent::print:" << std::endl;
-    std::cout << "Agent:........" << name << std::endl;
+    std::cout << "Agent::print:" << std::endl;
+    std::cout << "Name:........" << name << std::endl;
     std::cout << "Size:........." << state.size << std::endl;
     std::cout << "Energy:......." << state.energy << std::endl;
     std::cout << "Age:.........." << state.age << std::endl;
