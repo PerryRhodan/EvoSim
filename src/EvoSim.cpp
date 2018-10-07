@@ -60,22 +60,53 @@ void EvoSim::stop()
 void EvoSim::iteration()
 {
     // TODO use Boost logging
-    std::cout << "iterating" << std::endl;
+    //std::cout << "iterating" << std::endl;
 
     // handle user commands
     // TODO
 
     // update world
     m_pworld->update(0.100);
- 
+
     // publish current simulation status
     //m_ros_publisher.publish( simulation status  ); TODO
 
+    // check if all agents have died
+    int num_alive, num_dead = 0;
+    get_number_agents(num_alive, num_dead);
+
+    static int mod_ten = 0;
+    if(mod_ten % 10 == 0)
+    {
+        std::cout << "EvoSim:: Alive agents: " << num_alive << std::endl;
+    }
+    mod_ten ++;
+
+    if( num_alive <= 0 )
+    {
+        std::cout << "EvoSim:: All agents died, applying natural "
+                        << "selection, creating new agents." << std::endl;
+        // all agents died, sample the most successful ones
+        // and restart after applying some mutation
+        std::vector< std::shared_ptr<Agent> > next_generation_agents;
+        create_new_agents(m_pworld->m_vpagents, next_generation_agents,
+                                        5, 0.05);
+        // clear current agents
+        m_pworld->m_vpagents.clear();
+        m_pworld->m_vpagents.insert(
+                std::end(m_pworld->m_vpagents),
+                std::begin(next_generation_agents),
+                std::end(next_generation_agents));
+
+        // restore world
+        m_pworld->restore();
+    }
 
     // restart timer
     if(EvoSim::flag_isrunning)
     {
-        m_piteration_timer->expires_at(m_piteration_timer->expires_at() + boost::posix_time::milliseconds(100));
+        m_piteration_timer->expires_at(m_piteration_timer->expires_at()
+             + boost::posix_time::milliseconds(100));
         m_piteration_timer->async_wait(boost::bind(&EvoSim::iteration, this));
     }
  }
@@ -89,3 +120,54 @@ bool EvoSim::run()
 }
 
 //////////////////////////////////////////////////////
+
+void EvoSim::get_number_agents(int & num_alive, int & num_dead)
+{
+    num_alive = 0;
+    num_dead = 0;
+    for(const auto agent : m_pworld->m_vpagents)
+    {
+        if(agent->alive)
+            num_alive ++;
+        else
+            num_dead ++;
+    }
+}
+
+void EvoSim::create_new_agents(std::vector< std::shared_ptr<Agent> > current_agents,
+								std::vector< std::shared_ptr<Agent> > & new_agents,
+								const unsigned int num_agents,
+								const double mutation_mod)
+{
+    std::sort ( std::begin(current_agents), std::end(current_agents), Agent::compare_by_age );
+    
+    double highest_age = current_agents.at(0)->state.age;
+    std::cout << "EvoSim:: Highes age: " << highest_age << std::endl;
+    
+    unsigned int count = 0;
+    for (auto agent : current_agents)
+    {
+        AgentData::Genes genes 
+         = agent->genes;
+        AgentData::Genes_neural_weights genes_neural_weights
+         = agent->genes_neural_weights;
+        
+        // apply mutation
+        genes.mutate(mutation_mod);
+        genes_neural_weights.mutate(mutation_mod);
+        
+        // create new Agent with new genes
+        std::shared_ptr<Agent> new_agent
+         = std::make_shared<Agent>(genes, genes_neural_weights);
+        new_agents.push_back(new_agent);
+        ++ count;
+        if (count >= num_agents)
+            break;
+    }
+}
+
+int EvoSim::calculate_score(AgentData::State state)
+{
+    // For now simply go by age
+    return std::round(state.age);
+}

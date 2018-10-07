@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <signal.h>
+#include <math.h>
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -24,13 +25,24 @@ class EvoSim
 	static bool flag_isrunning;
 
 
-
     private:	
 
 	void initialise();
 
 	/** main iteration function */
 	void iteration();
+
+	/**  */
+	void get_number_agents(int & num_alive, int & num_dead);
+
+	/** */
+	void create_new_agents(std::vector< std::shared_ptr<Agent> > current_agents,
+								std::vector< std::shared_ptr<Agent> > & new_agents,
+								const unsigned int num_agents,
+								const double mutation_mod);
+	/** */
+	int calculate_score(AgentData::State state);
+	
 
 	/////////////
 

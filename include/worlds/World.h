@@ -17,12 +17,18 @@ class World
 
 	void update(double delta);
 
+	void restore();
+
+	/** create and add agent with given genes and mutation mod */
+	void create_and_add_agent(AgentData::Genes genes
+		, AgentData::Genes_neural_weights genes_neural_weights, double mutation_mod);
+
 	////////////////////////////////////////////
 
 	/** world name */
 	std::string m_str_name;
 	/** physical laws of this world */
-	WorldData::physical_laws physical_laws;
+	WorldData::Physical_laws physical_laws;
 
 	// tile width and height
 	int width;
@@ -50,5 +56,7 @@ class World
 
 	/** returns the available food from the given agents position */
 	double get_available_food(std::shared_ptr<Agent> agent);
+
+
 
 };

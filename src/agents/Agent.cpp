@@ -6,7 +6,30 @@ Agent::Agent() :
 name("default"),
 alive(true)
 {
-    
+    genes.randomize();
+    genes_neural_weights.randomize();
+    initialise();
+}
+
+Agent::Agent(AgentData::Genes _genes
+    , AgentData::Genes_neural_weights _genes_neural_weights) :
+name("default"), // TODO
+alive(true)
+{
+    genes = _genes;
+    genes_neural_weights = _genes_neural_weights;
+    initialise();
+}
+
+Agent::~Agent()
+{
+
+	
+}
+
+void Agent::initialise()
+{
+    // TODO
     position(0, 0) = 0.0;
     position(1, 0) = 0.0;
     velocity(0, 0) = 0.0;
@@ -14,12 +37,9 @@ alive(true)
     heading(0, 0) = 1.0; // face up by default
     heading(1, 0) = 0.0;
 
-
     // TODO for test
     state.size = 10.0;
     state.energy = 10.0;
-    genes.randomize();
-    genes_neural_weights.randomize();
 
     // ini initial default brain weights
     std::vector<std::vector<double>> vec_weights;
@@ -33,15 +53,9 @@ alive(true)
     brain.set_weights(vec_weights);
 }
 
-Agent::~Agent()
-{
-
-	
-}
-
 ////////////////////////////////////////////
 
-void Agent::receive_parents_traits(Agent & parent)
+void Agent::receive_parents_traits( const Agent & parent, const double mutation_mod)
 {
     //  Initial size and energy depends on parent.
     //  In other words, the bigger the more likely 
@@ -52,9 +66,13 @@ void Agent::receive_parents_traits(Agent & parent)
     // position is obviously the same
     position = parent.position;
 
-
     // neuron weights
-    genes.randomize();
+    genes = parent.genes;
+    genes_neural_weights = parent.genes_neural_weights;
+
+    // apply mutation
+    genes.mutate(mutation_mod);
+    genes_neural_weights.mutate(mutation_mod);
 
     // set up brain
     std::vector<std::vector<double>> vec_weights;
@@ -69,14 +87,20 @@ void Agent::receive_parents_traits(Agent & parent)
 
 }
 
+void Agent::mutate(double mutation_mod)
+{
+    genes.mutate(mutation_mod);
+    genes_neural_weights.mutate(mutation_mod);
+}
+
 /////////////////////////////////////////////
 
-void Agent::update(double delta, WorldData::physical_laws laws
+void Agent::update(double delta, WorldData::Physical_laws laws
 					, double available_food)
 {
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "Agent:: available_food: " << available_food << std::endl;
+    //std::cout << std::endl;
+    //std::cout << std::endl;
+    //std::cout << "Agent:: available_food: " << available_food << std::endl;
  
 
     // rotting
@@ -105,7 +129,7 @@ void Agent::update(double delta, WorldData::physical_laws laws
     // energy consumption
     state.energy -=
 	(
-        state.size * laws.size_energy_cost +
+        (state.size + state.pregnancy) * laws.size_energy_cost +
         laws.base_energy_cost
 	) * delta;
 
@@ -134,12 +158,10 @@ void Agent::update(double delta, WorldData::physical_laws laws
     	state.energy = laws.maximum_energy;
 
     // pregnancy growth
-    
+    state.pregnancy *= genes.pregnancy_growth;
 
 
-
-
-    print();
+    //print();
 
 }
 

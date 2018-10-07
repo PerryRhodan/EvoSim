@@ -16,14 +16,30 @@ class Agent
 
     public:
 	Agent();
+	Agent(AgentData::Genes _genes
+		, AgentData::Genes_neural_weights _genes_neural_weights);
 	~Agent();
+
+	static bool compare_by_age(const std::shared_ptr<Agent> first,
+								const std::shared_ptr<Agent> second)
+	{
+		if(first->state.age > second->state.age)
+			return true;
+		else
+			return false;								
+	};
 
 	// For now just assume one agent gives birth to a new
 	// one, and does not need a mating partner
-	void receive_parents_traits(Agent & parent);
+	void receive_parents_traits( const Agent & parent
+										, const double mutation_mod);
+
+	void mutate(double mutation_mod);
+
+	void initialise();
 
 	// Update with given physical laws of the world
-	void update(double delta, WorldData::physical_laws laws
+	void update(double delta, WorldData::Physical_laws laws
 					, double available_food);
 	void print();
 
@@ -41,18 +57,18 @@ class Agent
 
 
 	// current sensor inputs
-	AgentData::visibility_food vision_food;
-	AgentData::visibility_agents vision_agents;
+	AgentData::Visibility_food vision_food;
+	AgentData::Visibility_agents vision_agents;
 
 	// current state
-	AgentData::state state;
+	AgentData::State state;
 
 	// current actions
-	AgentData::actions actions;
+	AgentData::Actions actions;
 
 	// genes
-	AgentData::genes genes;
-	AgentData::genes_neural_weights genes_neural_weights;
+	AgentData::Genes genes;
+	AgentData::Genes_neural_weights genes_neural_weights;
 
 
 	// memory, remembers the last x events,

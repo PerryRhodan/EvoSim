@@ -6,7 +6,7 @@ World::World()
     m_str_name = "simple_world";
 
     // set up physical laws
-    physical_laws.base_energy_cost = 1.0;
+    physical_laws.base_energy_cost = 10.0;
     physical_laws.size_energy_cost = 0.1;
     physical_laws.size_base_growth = 1.0;
     physical_laws.maximum_energy = 50.0;
@@ -109,6 +109,15 @@ void World::handle_agent_actions(double delta, Agent & agent)
         current_tile -= agent.actions.eat;
     if(current_tile < 0) current_tile = 0;
 
+    // give birth
+    if(agent.state.pregnancy > 50.0) // TODO pregnancy required to give birth?
+    {
+        std::shared_ptr<Agent> offspring = std::make_shared<Agent>();
+        offspring->receive_parents_traits(agent, 0.05);
+        m_vpagents.push_back(offspring);
+        agent.state.pregnancy -= 50.0;
+    }
+
     // damage agains other agents on attack
     // TODO for now base on simple distance
     
@@ -132,8 +141,8 @@ void World::handle_agent_position(double delta, Agent & agent) const
     agent.velocity(1, 0) += agent.heading(1, 0) * agent.actions.move_forewards
 	    - agent.heading(1, 0) * agent.actions.move_backwards * agent.genes.movement_speed;
 
-    std::cout << "World:: agent.velocity: [" << agent.velocity(0, 0) << ", "
-	   << agent.velocity(1, 0) << "]" << std::endl; 
+    //std::cout << "World:: agent.velocity: [" << agent.velocity(0, 0) << ", "
+	//   << agent.velocity(1, 0) << "]" << std::endl; 
 
 
     // update position
@@ -150,6 +159,22 @@ void World::handle_agent_position(double delta, Agent & agent) const
 	    agent.position(1, 0) += height;
 
     agent.velocity *= 0.0; // reset velocity
+}
+
+////////////////////////////////////////
+
+void World::restore()
+{
+    int width = 10;
+    int height = 10;
+    for (int w=0; w<width; ++w)
+    {
+        for (int h=0; h<height; ++h)
+        {
+            tiles.at(h).at(w) = 10.0;
+        }
+    }
+
 }
 
 ////////////////////////////////////////
@@ -176,4 +201,15 @@ void World::update_agents(double delta)
 double World::get_available_food(std::shared_ptr<Agent> agent)
 {
     return tiles[agent->position(0,0)][agent->position(1,0)];
+}
+
+////////////////////////////////////////////////////////////////////////
+
+/** create and add agent with given genes and mutation mod */
+void World::create_and_add_agent(AgentData::Genes genes
+    , AgentData::Genes_neural_weights genes_neural_weights, double mutation_mod)
+{
+    std::shared_ptr<Agent> newagent = std::make_shared<Agent>(genes, genes_neural_weights);
+    newagent->mutate(mutation_mod);
+    m_vpagents.push_back(newagent);
 }

@@ -10,7 +10,7 @@ Neuron::Neuron(int in)
 {
     for(int i=0; i<in; ++i)
     {
-	weights.push_back(0.0);
+	    weights.push_back(0.0);
     }
     number_inputs = in;
 }
@@ -22,16 +22,16 @@ Neuron::~Neuron()
 
 void Neuron::update_weights(std::vector<double> neweights)
 {
-    std::cout << "Neuron:: update_weights" << std::endl;
+    //std::cout << "Neuron:: update_weights" << std::endl;
     if(weights.size() != neweights.size()) {
-	std::cout << "Neuron:: update_weights: Given new weights vector size of " << neweights.size()
+	    std::cout << "Neuron:: update_weights: Given new weights vector size of " << neweights.size()
 	       	<< " does not match weights vector size of " << weights.size() 
 	       	<< std::endl;
-	return;
+	    return;
     } 
     for(int i=0; i<weights.size(); ++i)
     {
-	weights[i] = neweights[i];
+	    weights[i] = neweights[i];
     }
 }
 
@@ -40,18 +40,18 @@ void Neuron::update_weights(std::vector<double> neweights)
 void Neuron::calculate(std::vector<double> inputs)
 {
     if(inputs.size() != weights.size()) {
-	std::cout << "Neuron:: calculate: Given input vector size of " << inputs.size()
-	       	<< " does not match weights vector size of " << weights.size() 
-	       	<< std::endl;
-	return;
+        std::cout << "Neuron:: calculate: Given input vector size of " << inputs.size()
+                << " does not match weights vector size of " << weights.size() 
+                << std::endl;
+        return;
     }
 
     // sum up weighted inputs
     output = 0.0;
     for(int i=0; i<number_inputs; ++i)
     {
-	// map inputs to [0,100[
-	output += inputs[i]/100.0 * weights[i];
+        // map inputs to [0,100[
+        output += inputs[i]/100.0 * weights[i];
 
     }
 
@@ -67,11 +67,11 @@ void Neuron::calculate(std::vector<double> inputs)
 
 void Neuron::print()
 {
-   std::cout << "Neuron::print" << std::endl;
-   for (int k=0; k<weights.size(); ++k)
-   {
-	std::cout << "Neuron:: weight " << k << ":" << weights[k] << std::endl;
-   }
+    std::cout << "Neuron::print" << std::endl;
+    for (int k=0; k<weights.size(); ++k)
+    {
+        std::cout << "Neuron:: weight " << k << ":" << weights[k] << std::endl;
+    }
 }
 
 
