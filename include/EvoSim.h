@@ -8,8 +8,13 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <ros/ros.h>
-#include <std_msgs/String.h>
+//#include <ros/ros.h>
+//#include <std_msgs/String.h>
+
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 #include "worlds/World.h"
 
@@ -46,11 +51,11 @@ class EvoSim
 
 	/////////////
 
-	/** ros node handle */
-	ros::NodeHandle m_ros_nodehandle;
+	// /** ros node handle */
+	// ros::NodeHandle m_ros_nodehandle;
 
-	/** ros publisher to output simulation status */
-	ros::Publisher m_ros_publisher;
+	// /** ros publisher to output simulation status */
+	// ros::Publisher m_ros_publisher;
 
 	/////////////
 
@@ -63,4 +68,5 @@ class EvoSim
 
 	/** the world to be simulated, run a simple world */
 	std::shared_ptr<World> m_pworld;
+
 };

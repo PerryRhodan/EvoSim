@@ -35,6 +35,7 @@ EvoSim::~EvoSim()
 
 }
 
+
 void EvoSim::initialise()
 {
     signal(SIGABRT, &sighandler);
@@ -47,7 +48,8 @@ void EvoSim::initialise()
 	    (*m_pio_service, boost::posix_time::milliseconds(100)); 
  
     // create ros publisher
-    m_ros_publisher = m_ros_nodehandle.advertise<std_msgs::String>("evosim_status", 1);
+    //m_ros_publisher = m_ros_nodehandle.advertise<std_msgs::String>("evosim_status", 1);
+
 }
 
 void EvoSim::stop()
@@ -101,6 +103,26 @@ void EvoSim::iteration()
         // restore world
         m_pworld->restore();
     }
+
+    // display debug image with position of agents, TODO
+    cv::Mat evosim_image = cv::Mat::zeros( 900, 900, CV_8UC3 );
+
+    for(const auto agent : m_pworld->m_vpagents)
+    {
+        // agent->print();
+        cv::Point center(agent->position(0,0) - agent->state.size/2
+                        , agent->position(1,0) - agent->state.size/2);
+        cv::circle( evosim_image,
+            center,
+            agent->state.size,
+            cv::Scalar( 0, 150, 255 ),
+            cv::FILLED,
+            cv::LINE_8 );
+    }
+
+    cv::imshow( "EvoSim", evosim_image );
+    cv::waitKey(10) & 0XFF;
+
 
     // restart timer
     if(EvoSim::flag_isrunning)
