@@ -4,19 +4,16 @@
 #include <memory>
 #include <signal.h>
 #include <math.h>
+#include <thread>
+#include <chrono>
 
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 //#include <ros/ros.h>
 //#include <std_msgs/String.h>
 
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/highgui.hpp>
-
 #include "worlds/World.h"
+#include "Display.h"
+
 
 class EvoSim
 {
@@ -59,14 +56,13 @@ class EvoSim
 
 	/////////////
 
-	/** service to run the iteration timer on */
-	std::shared_ptr<boost::asio::io_service> m_pio_service;
-	/** the timer for update iterations */
-	std::shared_ptr<boost::asio::deadline_timer> m_piteration_timer;
-
 	/////////////
 
 	/** the world to be simulated, run a simple world */
 	std::shared_ptr<World> m_pworld;
+
+
+
+	Display display;
 
 };

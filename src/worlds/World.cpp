@@ -6,7 +6,7 @@ World::World()
     m_str_name = "simple_world";
 
     // set up physical laws
-    physical_laws.base_energy_cost = 10.0;
+    physical_laws.base_energy_cost = 1.0;
     physical_laws.size_energy_cost = 0.1;
     physical_laws.size_base_growth = 1.0;
     physical_laws.maximum_energy = 50.0;
@@ -27,20 +27,20 @@ World::World()
     // TODO for testing add an agent here
     std::shared_ptr<Agent> agent = std::make_shared<Agent>();
     agent->name = "ONE";
-    std::shared_ptr<Agent> agent2 = std::make_shared<Agent>();
-    agent2->name = "TWO";
-    std::shared_ptr<Agent> agent3 = std::make_shared<Agent>();
-    agent3->name = "THREE";
-    std::shared_ptr<Agent> agent4 = std::make_shared<Agent>();
-    agent4->name = "FOUR";
-    std::shared_ptr<Agent> agent5 = std::make_shared<Agent>();
-    agent5->name = "FIVE";
+    // std::shared_ptr<Agent> agent2 = std::make_shared<Agent>();
+    // agent2->name = "TWO";
+    // std::shared_ptr<Agent> agent3 = std::make_shared<Agent>();
+    // agent3->name = "THREE";
+    // std::shared_ptr<Agent> agent4 = std::make_shared<Agent>();
+    // agent4->name = "FOUR";
+    // std::shared_ptr<Agent> agent5 = std::make_shared<Agent>();
+    // agent5->name = "FIVE";
 
     m_vpagents.push_back(agent);
-    m_vpagents.push_back(agent2);
-    m_vpagents.push_back(agent3);
-    m_vpagents.push_back(agent4);
-    m_vpagents.push_back(agent5);
+    // m_vpagents.push_back(agent2);
+    // m_vpagents.push_back(agent3);
+    // m_vpagents.push_back(agent4);
+    // m_vpagents.push_back(agent5);
 }
 
 World::~World()

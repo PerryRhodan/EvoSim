@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "../agents/Agent.h"
-#include <Eigen/Geometry>
+
 #include "WorldData.h"
 
 

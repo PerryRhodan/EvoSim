@@ -30,8 +30,8 @@ Agent::~Agent()
 void Agent::initialise()
 {
     // TODO
-    position(0, 0) = 0.0;
-    position(1, 0) = 0.0;
+    position(0, 0) = 5.0;
+    position(1, 0) = 5.0;
     velocity(0, 0) = 0.0;
     velocity(1, 0) = 0.0;
     heading(0, 0) = 1.0; // face up by default

@@ -18,7 +18,6 @@ void sighandler(int sig)
 EvoSim::EvoSim()
 {    
     // create default world
-    //m_pworld = std::make_shared<IWorld>(); TODO
     m_pworld = std::make_shared<World>();
     std::cout << "EvoSim using world: " << m_pworld->m_str_name << std::endl;
 
@@ -42,14 +41,8 @@ void EvoSim::initialise()
     signal(SIGTERM, &sighandler);
     signal(SIGINT, &sighandler);
  
-    // create service and timer for iteration calculations	
-    m_pio_service = std::make_shared<boost::asio::io_service>();
-    m_piteration_timer = std::make_shared<boost::asio::deadline_timer>
-	    (*m_pio_service, boost::posix_time::milliseconds(100)); 
- 
     // create ros publisher
     //m_ros_publisher = m_ros_nodehandle.advertise<std_msgs::String>("evosim_status", 1);
-
 }
 
 void EvoSim::stop()
@@ -61,83 +54,67 @@ void EvoSim::stop()
 
 void EvoSim::iteration()
 {
-    // TODO use Boost logging
-    //std::cout << "iterating" << std::endl;
+    using namespace std::chrono_literals;
 
-    // handle user commands
-    // TODO
-
-    // update world
-    m_pworld->update(0.100);
-
-    // publish current simulation status
-    //m_ros_publisher.publish( simulation status  ); TODO
-
-    // check if all agents have died
-    int num_alive, num_dead = 0;
-    get_number_agents(num_alive, num_dead);
-
-    static int mod_ten = 0;
-    if(mod_ten % 10 == 0)
+    while(EvoSim::flag_isrunning)
     {
-        std::cout << "EvoSim:: Alive agents: " << num_alive << std::endl;
-    }
-    mod_ten ++;
+        // TODO use Boost logging
+        //std::cout << "iterating" << std::endl;
 
-    if( num_alive <= 0 )
-    {
-        std::cout << "EvoSim:: All agents died, applying natural "
-                        << "selection, creating new agents." << std::endl;
-        // all agents died, sample the most successful ones
-        // and restart after applying some mutation
-        std::vector< std::shared_ptr<Agent> > next_generation_agents;
-        create_new_agents(m_pworld->m_vpagents, next_generation_agents,
-                                        5, 0.05);
-        // clear current agents
-        m_pworld->m_vpagents.clear();
-        m_pworld->m_vpagents.insert(
-                std::end(m_pworld->m_vpagents),
-                std::begin(next_generation_agents),
-                std::end(next_generation_agents));
+        // handle user commands
+        // TODO
 
-        // restore world
-        m_pworld->restore();
-    }
+        // update world
+        m_pworld->update(0.100);
 
-    // display debug image with position of agents, TODO
-    cv::Mat evosim_image = cv::Mat::zeros( 900, 900, CV_8UC3 );
+        // publish current simulation status
+        //m_ros_publisher.publish( simulation status  ); TODO
 
-    for(const auto agent : m_pworld->m_vpagents)
-    {
-        // agent->print();
-        cv::Point center(agent->position(0,0) - agent->state.size/2
-                        , agent->position(1,0) - agent->state.size/2);
-        cv::circle( evosim_image,
-            center,
-            agent->state.size,
-            cv::Scalar( 0, 150, 255 ),
-            cv::FILLED,
-            cv::LINE_8 );
-    }
+        // check if all agents have died
+        int num_alive, num_dead = 0;
+        get_number_agents(num_alive, num_dead);
 
-    cv::imshow( "EvoSim", evosim_image );
-    cv::waitKey(10) & 0XFF;
+        static int mod_ten = 0;
+        if(mod_ten % 10 == 0)
+        {
+            std::cout << "EvoSim:: Alive agents: " << num_alive << std::endl;
+        }
+        mod_ten ++;
 
+        if( num_alive <= 0 )
+        {
+            std::cout << "EvoSim:: All agents died, applying natural "
+                            << "selection, creating new agents." << std::endl;
+            // all agents died, sample the most successful ones
+            // and restart after applying some mutation
+            std::vector< std::shared_ptr<Agent> > next_generation_agents;
+            create_new_agents(m_pworld->m_vpagents, next_generation_agents,
+                                            5, 0.05);
+            // clear current agents
+            m_pworld->m_vpagents.clear();
+            m_pworld->m_vpagents.insert(
+                    std::end(m_pworld->m_vpagents),
+                    std::begin(next_generation_agents),
+                    std::end(next_generation_agents));
 
-    // restart timer
-    if(EvoSim::flag_isrunning)
-    {
-        m_piteration_timer->expires_at(m_piteration_timer->expires_at()
-             + boost::posix_time::milliseconds(100));
-        m_piteration_timer->async_wait(boost::bind(&EvoSim::iteration, this));
+            // restore world
+            m_pworld->restore();
+        }
+
+        // update display
+        display.display(m_pworld);
+
+        std::this_thread::sleep_for(10ms);
     }
  }
 	
 bool EvoSim::run()
 {
     initialise();
-    m_piteration_timer->async_wait(boost::bind(&EvoSim::iteration, this));
-    m_pio_service->run();
+
+    std::thread d(&EvoSim::iteration, this);
+    d.join();
+
     return true;
 }
 

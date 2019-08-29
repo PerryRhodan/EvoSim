@@ -51,6 +51,7 @@ set(SRC_FILES
 	"src/agents/Brain.cpp"
 	"src/agents/Neuron.cpp"
 	"src/worlds/World.cpp"
+	"src/Display.cpp"
 	)
 set(UNIT_TESTS 
 	"unit-tests/main.cpp" 
@@ -64,6 +65,7 @@ target_link_libraries (EvoSim
        	Eigen3::Eigen
        	${Boost_LIBRARIES}
 		${OpenCV_LIBS}
+		-lpthread
 	#${catkin_LIBRARIES}
 	)
 
